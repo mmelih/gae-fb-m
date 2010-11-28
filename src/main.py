@@ -7,10 +7,7 @@ from PageHandlers.PostHandler import PostHandler
 from PageHandlers.MelihHandler import MelihHandler
 
 
-application = webapp.WSGIApplication([('/', MainHandler),
-                                      ('/show', ShowHandler),
-                                      ('/post', PostHandler),
-                                      ('/melih', MelihHandler)
+application = webapp.WSGIApplication([('/', MainHandler)
                                       ])
 
 def main():
