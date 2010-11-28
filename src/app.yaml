@@ -1,0 +1,18 @@
+application: gae-fb-m
+version: 1
+runtime: python
+api_version: 1
+
+handlers:
+- url: /scripts
+  static_dir: scripts
+
+- url: /style
+  static_dir: style
+  
+- url: /images
+  static_dir: images
+   
+- url: /.*
+  script: main.py
+  

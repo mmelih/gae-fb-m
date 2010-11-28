@@ -1,0 +1,1 @@
+{title: "{{ title.name }}",entries: [{% for entry in title.entries %} {{ entry.content }}},{% endfor %}]}

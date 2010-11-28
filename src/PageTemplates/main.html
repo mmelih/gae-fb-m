@@ -1,0 +1,35 @@
+<!doctype html>
+<html>
+  <head>
+    <title>brainlogger</title>
+    <link rel="stylesheet" href="style/reset.css" type="text/css">
+    <link rel="stylesheet" href="style/style.css" type="text/css">
+    <script src="scripts/script.js"></script>
+  </head>
+  <body>
+    <header id="th">
+      brainlogger
+      <form method="GET" action="show" class="if" name="sf" data-request="rpcGetTitle" data-callback="showEntries">
+        <input type="search" name="q" id="si">
+        <input type="submit" value="search">
+      </form>
+      <div id="ud">
+        <a href="{{ userlink }}">
+          {{ usertext }}
+        </a>
+        {% if nick %} | {{ nick }}{% endif %}
+      </div>
+    </header>
+    <article id="ta">
+      <header id="et"></header>
+      <form method="POST" action="post" id="ef" name="ef" data-request="rpcPostEntry" data-callback="showTitle">
+        <input type="hidden" name="t" value="">
+        <textarea id="ct" name="ct"></textarea>
+        <div id="hf">
+          <input type="text" name="tags">
+          <input type="submit" valaue="post">
+        </div>
+      </form>
+    </article>
+  </body>
+</html>
