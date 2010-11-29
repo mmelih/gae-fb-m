@@ -19,6 +19,8 @@ class PageHandler(webapp.RequestHandler):
         if not templateDict:
             templateDict = dict()
         
+        
+        
         userLink = self.getUserLink()
         templateDict["usertext"] = userLink[0]
         templateDict["userlink"] = userLink[1]

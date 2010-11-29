@@ -6,14 +6,12 @@ Created on Aug 20, 2010
 
 from google.appengine.ext import db
 
-class Entry(db.Model):
-    title = db.StringProperty()
-    author = db.UserProperty(auto_current_user_add = True)
-    content = db.TextProperty()
-    rating = db.IntegerProperty(default=0)
+  
     
-    dateAdded = db.DateTimeProperty(required=True, auto_now_add=True)
-    
-class Ogrenci(db.Model):
-    isim = db.StringProperty()
-    numara = db.IntegerProperty(default = 0)
+class User(db.Model):
+    id = db.StringProperty(required=True)
+    created = db.DateTimeProperty(auto_now_add=True)
+    updated = db.DateTimeProperty(auto_now=True)
+    name = db.StringProperty(required=True)
+    profile_url = db.StringProperty(required=True)
+    access_token = db.StringProperty(required=True)

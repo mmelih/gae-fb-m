@@ -6,38 +6,14 @@ Created on Oct 19, 2010
 
 from Models import *
 
-def getByTitle(title):
-    t = Entry.all()
-    t.filter("title=", title)
-    result = t.get()
-    return result
+def getFbUser(self, cookie):
+    return User.get_by_key_name(cookie["uid"])
 
-def putEntry(title, content): 
-    entry = Entry()
-    entry.title = title
-    entry.content = content
-    entry.put()
-    return
-
-def downVote(entryKey):
-    def txn(key):
-        entry = db.get(key)
-        entry.rating -= 1
-        entry.put()
-        return entry.rating
-    return db.run_in_transaction(txn, entryKey)
-
-def upVote(entryKey):
-    def txn(key):
-        entry = db.get(key)
-        entry.rating += 1
-        entry.put()
-        return entry.rating
-    return db.run_in_transaction(txn, entryKey)
-
-def ogrenciEkle(isim,numara):
-    ogrenci = Ogrenci()
-    ogrenci.isim = isim
-    ogrenci.numara = int(numara)
-    ogrenci.put()
-    
+def saveUser(profile,cookie):
+    user = User(key_name=str(profile["id"]),
+                                id=str(profile["id"]),
+                                name=profile["name"],
+                                profile_url=profile["link"],
+                                access_token=cookie["access_token"])
+    user.put()
+    return user
