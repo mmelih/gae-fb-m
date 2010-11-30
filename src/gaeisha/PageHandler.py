@@ -10,6 +10,8 @@ from google.appengine.ext import webapp
 from google.appengine.ext.webapp import template
 from django.utils import simplejson
 import os.path
+from model import ModelActions
+
 
 class PageHandler(webapp.RequestHandler):
     TEMPLATE_PATH = "../PageTemplates/"
@@ -44,10 +46,17 @@ class PageHandler(webapp.RequestHandler):
             try:
                 self.user = self.facebookapi.users.getInfo(
                                                             [self.facebookapi.uid],
-                                                            ['uid', 'name', 'birthday', 'relationship_status'])[0]    
+                                                            ['uid', 'name', 'access_token', 'birthday', 'relationship_status'])[0]    
             except facebook.FacebookError:
                 return None
-            return self.user
+            
+            #Check if we already registered the user
+            rUser = ModelActions.getFacebookUser(self.user["uid"])
+
+            if(not rUser):
+                rUser = ModelActions.registerFacebookUser(self.user["name"], 
+                                                  self.user["uid"], self.user["access_token"])
+            return rUser
         else:
             return None
     

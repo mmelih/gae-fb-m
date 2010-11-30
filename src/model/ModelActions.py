@@ -8,11 +8,20 @@ from Models import *
 
 
 
-def saveUser(profile,cookie):
-    user = User(key_name=str(profile["id"]),
-                                id=str(profile["id"]),
-                                name=profile["name"],
-                                profile_url=profile["link"],
-                                access_token=cookie["access_token"])
+def registerUser(self, name, registirationType = "normal"):
+    user = User()
+    user.name = name
+    user.registirationType = registirationType
     user.put()
     return user
+
+def registerFacebookUser(self, name, facebookId, facebookAccessToken):
+    user = registerUser(name,"facebook")
+    user.facebookId = facebookId
+    user.facebookAccessToken = facebookAccessToken
+    return user
+
+def getFacebookUser(self, facebookId):
+    registeredUsers = db.GqlQuery("SELECT * FROM User WHERE registirationType =: 1 AND facebookId = :2", "facebook", facebookId)
+    rUser = registeredUsers.get()
+    return rUser
