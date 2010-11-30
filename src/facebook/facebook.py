@@ -461,98 +461,98 @@ class AuthProxy(Proxy):
         return token
 
 
-class FriendsProxy(FriendsProxy):
-    """Special proxy for facebook.friends."""
-
-    def get(self):
-        """Facebook API call. See http://developers.facebook.com/documentation.php?v=1.0&method=friends.get"""
-        if self._client._friends:
-            return self._client._friends
-        return super(FriendsProxy, self).get()
-
-
-class PhotosProxy(PhotosProxy):
-    """Special proxy for facebook.photos."""
-
-    def upload(self, image, aid=None, caption=None, size=(604, 1024)):
-        """Facebook API call. See http://developers.facebook.com/documentation.php?v=1.0&method=photos.upload
-
-        size -- an optional size (width, height) to resize the image to before uploading. Resizes by default
-                to Facebook's maximum display width of 604.
-        """
-        args = {}
-
-        if aid is not None:
-            args['aid'] = aid
-
-        if caption is not None:
-            args['caption'] = caption
-
-        args = self._client._build_post_args('facebook.photos.upload', self._client._add_session_args(args))
-
-        try:
-            import cStringIO as StringIO
-        except ImportError:
-            import StringIO
-
-        try:
-            import Image
-        except ImportError:
-            data = StringIO.StringIO(open(image, 'rb').read())
-        else:
-            img = Image.open(image)
-            if size:
-                img.thumbnail(size, Image.ANTIALIAS)
-            data = StringIO.StringIO()
-            img.save(data, img.format)
-
-        content_type, body = self.__encode_multipart_formdata(list(args.iteritems()), [(image, data)])
-        h = httplib.HTTP('api.facebook.com')
-        h.putrequest('POST', '/restserver.php')
-        h.putheader('Content-Type', content_type)
-        h.putheader('Content-Length', str(len(body)))
-        h.putheader('MIME-Version', '1.0')
-        h.putheader('User-Agent', 'PyFacebook Client Library')
-        h.endheaders()
-        h.send(body)
-
-        reply = h.getreply()
-
-        if reply[0] != 200:
-            raise Exception('Error uploading photo: Facebook returned HTTP %s (%s)' % (reply[0], reply[1]))
-
-        response = h.file.read()
-
-        return self._client._parse_response(response, 'facebook.photos.upload')
+#class FriendsProxy(FriendsProxy):
+#    """Special proxy for facebook.friends."""
+#
+#    def get(self):
+#        """Facebook API call. See http://developers.facebook.com/documentation.php?v=1.0&method=friends.get"""
+#        if self._client._friends:
+#            return self._client._friends
+#        return super(FriendsProxy, self).get()
 
 
-    def __encode_multipart_formdata(self, fields, files):
-        """Encodes a multipart/form-data message to upload an image."""
-        boundary = '-------tHISiStheMulTIFoRMbOUNDaRY'
-        crlf = '\r\n'
-        l = []
-
-        for (key, value) in fields:
-            l.append('--' + boundary)
-            l.append('Content-Disposition: form-data; name="%s"' % str(key))
-            l.append('')
-            l.append(str(value))
-        for (filename, value) in files:
-            l.append('--' + boundary)
-            l.append('Content-Disposition: form-data; filename="%s"' % (str(filename), ))
-            l.append('Content-Type: %s' % self.__get_content_type(filename))
-            l.append('')
-            l.append(value.getvalue())
-        l.append('--' + boundary + '--')
-        l.append('')
-        body = crlf.join(l)
-        content_type = 'multipart/form-data; boundary=%s' % boundary
-        return content_type, body
-
-
-    def __get_content_type(self, filename):
-        """Returns a guess at the MIME type of the file from the filename."""
-        return str(mimetypes.guess_type(filename)[0]) or 'application/octet-stream'
+#class PhotosProxy(PhotosProxy):
+#    """Special proxy for facebook.photos."""
+#
+#    def upload(self, image, aid=None, caption=None, size=(604, 1024)):
+#        """Facebook API call. See http://developers.facebook.com/documentation.php?v=1.0&method=photos.upload
+#
+#        size -- an optional size (width, height) to resize the image to before uploading. Resizes by default
+#                to Facebook's maximum display width of 604.
+#        """
+#        args = {}
+#
+#        if aid is not None:
+#            args['aid'] = aid
+#
+#        if caption is not None:
+#            args['caption'] = caption
+#
+#        args = self._client._build_post_args('facebook.photos.upload', self._client._add_session_args(args))
+#
+#        try:
+#            import cStringIO as StringIO
+#        except ImportError:
+#            import StringIO
+#
+#        try:
+#            import Image
+#        except ImportError:
+#            data = StringIO.StringIO(open(image, 'rb').read())
+#        else:
+#            img = Image.open(image)
+#            if size:
+#                img.thumbnail(size, Image.ANTIALIAS)
+#            data = StringIO.StringIO()
+#            img.save(data, img.format)
+#
+#        content_type, body = self.__encode_multipart_formdata(list(args.iteritems()), [(image, data)])
+#        h = httplib.HTTP('api.facebook.com')
+#        h.putrequest('POST', '/restserver.php')
+#        h.putheader('Content-Type', content_type)
+#        h.putheader('Content-Length', str(len(body)))
+#        h.putheader('MIME-Version', '1.0')
+#        h.putheader('User-Agent', 'PyFacebook Client Library')
+#        h.endheaders()
+#        h.send(body)
+#
+#        reply = h.getreply()
+#
+#        if reply[0] != 200:
+#            raise Exception('Error uploading photo: Facebook returned HTTP %s (%s)' % (reply[0], reply[1]))
+#
+#        response = h.file.read()
+#
+#        return self._client._parse_response(response, 'facebook.photos.upload')
+#
+#
+#    def __encode_multipart_formdata(self, fields, files):
+#        """Encodes a multipart/form-data message to upload an image."""
+#        boundary = '-------tHISiStheMulTIFoRMbOUNDaRY'
+#        crlf = '\r\n'
+#        l = []
+#
+#        for (key, value) in fields:
+#            l.append('--' + boundary)
+#            l.append('Content-Disposition: form-data; name="%s"' % str(key))
+#            l.append('')
+#            l.append(str(value))
+#        for (filename, value) in files:
+#            l.append('--' + boundary)
+#            l.append('Content-Disposition: form-data; filename="%s"' % (str(filename), ))
+#            l.append('Content-Type: %s' % self.__get_content_type(filename))
+#            l.append('')
+#            l.append(value.getvalue())
+#        l.append('--' + boundary + '--')
+#        l.append('')
+#        body = crlf.join(l)
+#        content_type = 'multipart/form-data; boundary=%s' % boundary
+#        return content_type, body
+#
+#
+#    def __get_content_type(self, filename):
+#        """Returns a guess at the MIME type of the file from the filename."""
+#        return str(mimetypes.guess_type(filename)[0]) or 'application/octet-stream'
 
 
 class Facebook(object):

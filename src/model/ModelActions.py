@@ -6,8 +6,7 @@ Created on Oct 19, 2010
 
 from Models import *
 
-def getFbUser(self, cookie):
-    return User.get_by_key_name(cookie["uid"])
+
 
 def saveUser(profile,cookie):
     user = User(key_name=str(profile["id"]),

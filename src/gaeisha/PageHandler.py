@@ -3,7 +3,8 @@ Created on Oct 18, 2010
 
 @author: cagatay.yuksel
 '''
-
+from facebook import facebook
+from config import facebookConf
 from google.appengine.api import users
 from google.appengine.ext import webapp
 from google.appengine.ext.webapp import template
@@ -21,14 +22,7 @@ class PageHandler(webapp.RequestHandler):
         
         
         
-        userLink = self.getUserLink()
-        templateDict["usertext"] = userLink[0]
-        templateDict["userlink"] = userLink[1]
-        
-        nick = self.getUserNick()
-        templateDict['nick'] = nick
-        
-        self.writeTemplate(self.TEMPLATE_FILE, templateDict)
+       
         
         return
     
@@ -44,31 +38,26 @@ class PageHandler(webapp.RequestHandler):
             self.error(404)
         return
     
-    def getUser(self):
-        return users.get_current_user()
-    
-    def getUserNick(self):
-        nickname = ''
-        
-        user = self.getUser()
-        if user:
-            nickname = user.nickname().split('@')[0]
+    def checkFacebookSession(self):
+        self.facebookapi = facebook.Facebook(facebookConf.FACEBOOK_APP_KEY, facebookConf.FACEBOOK_APP_SECRET)
+        if self.facebookapi.check_connect_session(self.request):
+            try:
+                self.user = self.facebookapi.users.getInfo(
+                                                            [self.facebookapi.uid],
+                                                            ['uid', 'name', 'birthday', 'relationship_status'])[0]    
+            except facebook.FacebookError:
+                return None
+            return self.user
         else:
-            nickname = None
-        
-        return nickname
+            return None
     
-    def getUserLink(self):
-        user = self.getUser()
-        retVal = ()
-        
-        if user:
-            retVal = ('logout', users.create_logout_url(self.request.uri))
-        else:
-            retVal = ('login', users.create_login_url(self.request.uri))
-        
-        return retVal
-    
+    def showLoginForm(self):
+        templateDict = dict()
+        templateDict["apikey"] = facebookConf.FACEBOOK_APP_KEY
+        templateDict["login_error"] = "no connect session"
+        self.writeTemplate(self.TEMPLATE_FILE, templateDict)
+        return
+
     def writeTemplate(self, templateFile, templateDict):
         templatePath = os.path.join(os.path.dirname(__file__), self.TEMPLATE_PATH + templateFile)
         self.response.out.write(template.render(templatePath, templateDict))
