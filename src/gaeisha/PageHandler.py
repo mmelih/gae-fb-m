@@ -17,15 +17,10 @@ class PageHandler(webapp.RequestHandler):
     TEMPLATE_PATH = "../PageTemplates/"
 
     
-    def get(self, templateDict=None):
+    def get(self, templateDict=None):     
         self.preprocess()
         if not templateDict:
-            templateDict = dict()
-        
-        
-        
-       
-        
+            templateDict = dict()      
         return
     
     def post(self):
@@ -41,36 +36,25 @@ class PageHandler(webapp.RequestHandler):
         return
     
     def checkFacebookSession(self):
-        self.facebookapi = facebook.Facebook(facebookConf.FACEBOOK_APP_KEY, facebookConf.FACEBOOK_APP_SECRET)
-        if self.facebookapi.check_connect_session(self.request):
-            try:
-                self.user = self.facebookapi.users.getInfo(
-                                                            [self.facebookapi.uid],
-                                                            ['uid', 'name', 'access_token', 'birthday', 'relationship_status'])[0]    
-            except facebook.FacebookError:
-                return None
-            
+        rUser = None
+        
+        user_id = facebook.parse_cookie(self.request.cookies.get("fb_user"))
+        if user_id:
             #Check if we already registered the user
-            rUser = ModelActions.getFacebookUser(self.user["uid"])
+            rUser = ModelActions.getFacebookUser(self, user_id)
 
-            if(not rUser):
-                rUser = ModelActions.registerFacebookUser(self.user["name"], 
-                                                  self.user["uid"], self.user["access_token"])
-            return rUser
-        else:
-            return None
+        return rUser
+
     
     def showLoginForm(self):
         templateDict = dict()
-        templateDict["apikey"] = facebookConf.FACEBOOK_APP_KEY
         templateDict["login_error"] = "no connect session"
         self.writeTemplate(self.TEMPLATE_FILE, templateDict)
         return
 
     def writeTemplate(self, templateFile, templateDict):
         templatePath = os.path.join(os.path.dirname(__file__), self.TEMPLATE_PATH + templateFile)
-        self.response.out.write(template.render(templatePath, templateDict))
-        
+        self.response.out.write(template.render(templatePath, templateDict))    
         return
     
     def writeJson(self, data):

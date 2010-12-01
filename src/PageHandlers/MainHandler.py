@@ -13,15 +13,14 @@ class MainHandler(PageHandler):
     def preprocess(self):
         templateDict = dict()
         
-        
+       
         user = self.checkFacebookSession()
         
         if(not user):
             self.showLoginForm()
         else:
-            templateDict["welcome_message"] = self.user["name"]
+            templateDict["welcome_message"] = user.name
 
-        
         self.writeTemplate(self.TEMPLATE_FILE, templateDict)
         return
     

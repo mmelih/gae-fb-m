@@ -2,10 +2,12 @@ from google.appengine.ext import webapp
 from google.appengine.ext.webapp.util import run_wsgi_app
 
 from PageHandlers.MainHandler import MainHandler
+from PageHandlers.FacebookLoginHandler import FacebookLoginHandler
 
 
 
-application = webapp.WSGIApplication([('/', MainHandler)
+application = webapp.WSGIApplication([('/', MainHandler),
+                                      ('/facebookLogin',FacebookLoginHandler)
                                       ])
 
 def main():
