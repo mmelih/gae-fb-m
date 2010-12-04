@@ -26,6 +26,8 @@ def getFacebookUser(self, facebookId):
     return rUser
 
 def updateFacebookUser(self, facebookId, property, value):
-    result = db.GqlQuery("UPDATE User SET :1 = :2 WHERE facebookId = :3", property, value,  facebookId)
+    user = getFacebookUser(self, facebookId)
+    property = getattr(user, property)
+    user.property = value
     return 
     

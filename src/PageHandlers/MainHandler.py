@@ -19,7 +19,7 @@ class MainHandler(PageHandler):
         if(not user):
             self.showLoginForm()
         else:
-            templateDict["welcome_message"] = user.name
+            templateDict["user"] = user.name
 
         self.writeTemplate(self.TEMPLATE_FILE, templateDict)
         return

@@ -4,7 +4,16 @@
     <title>gae fb m</title>
     <link rel="stylesheet" href="style/reset.css" type="text/css">
     <link rel="stylesheet" href="style/style.css" type="text/css">
+    
+    <!-- Google Maps API & Gears -->
+    <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=true"></script>
+	<script type="text/javascript" src="http://code.google.com/apis/gears/gears_init.js"></script>
+    
     <script src="scripts/script.js"></script>
+    <script type="text/javascript" src="scripts/googleMaps.js"></script>
+    
+    
+    
     
   </head>
   <body>
@@ -16,6 +25,20 @@
     
 {% if login_error %} 
 	<a href="/facebookLogin">Facebook ile login</a>
+{% else %}
+     <a href="#" onClick="fillMap()">Ben nerdeyim?</a>
+	 <div id="map_canvas" style="width:400px; height:300px;"></div>
+	 <script type="text/javascript">
+	 	gMapInitialize();
+	 	var currentUser = "{{ user }}";
+	 	
+	 	function fillMap()
+	 	{
+	 		showContentOnMap(currentUser, initialLocation);
+	 	}
+	 </script>
+	
+	 
 {% endif %}
     
     

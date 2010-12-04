@@ -41,7 +41,7 @@ class FacebookLoginHandler(PageHandler):
                 rUser = ModelActions.registerFacebookUser(self, profile["name"], 
                                                   str(profile["id"]), access_token)
             else:
-                ModelActions.updateFacebookUser(str(profile["id"]), "access_token", access_token) 
+                ModelActions.updateFacebookUser(self, str(profile["id"]), "facebookAccessToken", access_token)  
                   
             facebook.set_cookie(self.response, "fb_user", str(profile["id"]),
                        expires=time.time() + 30 * 86400)
