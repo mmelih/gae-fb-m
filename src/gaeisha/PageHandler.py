@@ -41,7 +41,7 @@ class PageHandler(webapp.RequestHandler):
         user_id = facebook.parse_cookie(self.request.cookies.get("fb_user"))
         if user_id:
             #Check if we already registered the user
-            rUser = ModelActions.getFacebookUser(self, user_id)
+            rUser = ModelActions.getFacebookUser(user_id)
 
         return rUser
 

@@ -35,7 +35,7 @@ class FacebookLoginHandler(PageHandler):
                 urllib.urlencode(dict(access_token=access_token))))
             
             #TODO: may fail if the user removed app from facebook app list and then login again
-            rUser = ModelActions.getFacebookUser(self, str(profile["id"]))
+            rUser = ModelActions.getFacebookUser(str(profile["id"]))
 
             if(not rUser):
                 rUser = ModelActions.registerFacebookUser(self, profile["name"], 

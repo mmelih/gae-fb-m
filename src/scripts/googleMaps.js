@@ -9,6 +9,7 @@ function gMapInitialize() {
     mapTypeId: google.maps.MapTypeId.ROADMAP,
     disableDefaultUI: true
   };
+
   map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
   
   // Try W3C Geolocation method (Preferred)
@@ -17,6 +18,7 @@ function gMapInitialize() {
     navigator.geolocation.getCurrentPosition(function(position) {
       initialLocation = new google.maps.LatLng(position.coords.latitude,position.coords.longitude);
       map.setCenter(initialLocation);
+      
     }, function() {
       handleNoGeolocation(browserSupportFlag);
     });
@@ -28,6 +30,7 @@ function gMapInitialize() {
       initialLocation = new google.maps.LatLng(position.latitude,position.longitude);
       //showContentOnMap("Location found using Google Gears", initialLocation);
       map.setCenter(initialLocation);
+      
     }, function() {
       handleNoGeolocation(browserSupportFlag);
     });
@@ -46,12 +49,36 @@ function handleNoGeolocation(errorFlag) {
 	  alert("Browser does not support geolocation");
   }
  
+  
 }
 
 
 function showContentOnMap(contentString, location) {	
-    map.setCenter(location);
-    infowindow.setContent(contentString);
-    infowindow.setPosition(location);
-    infowindow.open(map);
+	var marker = new google.maps.Marker({
+        position: location, 
+        map: map, 
+        title:contentString
+    });   
 }
+
+
+function fillMap() { 
+	
+	makeRequest("getUsers?lat=" + initialLocation.lat() + "&lon=" + initialLocation.lng(), 
+				"GET", "", "", fillUserList); 
+	
+ 	
+}
+
+function fillUserList(response){
+
+	for(var i in response){
+		userLocation = new google.maps.LatLng(response[i][1],response[i][2]);
+		showContentOnMap(response[i][0], userLocation);
+	}
+		
+		
+	
+	
+}
+

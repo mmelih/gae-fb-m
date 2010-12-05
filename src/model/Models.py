@@ -12,4 +12,5 @@ class User(db.Expando):
     name = db.StringProperty(required=True)
     registirationType = db.StringProperty(required=True, 
                                           choices=set(["normal","facebook", "google"]))
+    latestLocation = db.GeoPtProperty()
 
